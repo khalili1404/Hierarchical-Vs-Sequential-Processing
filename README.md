@@ -29,44 +29,64 @@ Our empirical results demonstrate that the **TCN architecture** possesses a hier
 ├── quick_test.py                      # Diagnostics: Verifies installation dependencies
 ├── requirements.txt                   # List of Python dependencies
 └── README.md                          # Project documentation
-
+```
 
 ##  Installation & Setup
 
-1. Clone the Repository
-git clone [https://github.com/YourUsername/Seismic-DL-Benchmark.git](https://github.com/YourUsername/Seismic-DL-Benchmark.git)
-cd Seismic-DL-Benchmark
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/khalili1404/Hierarchical-Vs-Sequential-Processing.git
+cd Hierarchical-Vs-Sequential-Processing
 pip install -r requirements.txt
+```
 
+### 2. Install Dependencies
 
-2. Install Dependencies
 It is highly recommended to use a virtual environment (Python 3.8+).
-```pip install -r requirements.txt```
+```bash
+pip install -r requirements.txt
+```
 
-3. Verify Environment
+### 3. Verify Environment
+
 Run the quick diagnostic script to ensure TensorFlow, SHAP, and other libraries are correctly installed.
-```python quick_test.py```
 
-Usage Pipeline
+```bash
+python quick_test.py
+```
+
+## Usage Pipeline
 To reproduce the study's results, please follow these steps in order:
-Step 1: Training the Models
+
+### Step 1: Training the Models
+
 Trains all architectures from scratch across short-term (w=20) and medium-term (w=50) horizons.
-```python train_benchmarks.py```
+
+```bash
+python train_benchmarks.py
+```
 Output: Saves trained models to the root directory and prints MAE metrics.
 
-Step 2: Feature Importance Analysis
+### Step 2: Feature Importance Analysis
 Runs the SHAP explainer on the trained models to compute global and temporal feature importance. This step is essential for interpretability.
-```python explain_shap.py```
+```bash
+python explain_shap.py
+```
 Output: Generates individual SHAP plots for each model (useful for Supplementary Materials).
 
-Step 3: Generating Paper Figures
+### Step 3: Generating Paper Figures
 Produces the final combined figures used in the manuscript:
 
 Figure 4 (Validation Loss Comparison): Visualizes the convergence stability of the TCN compared to Transformers.
-```python plot_loss_comparison.py```
+```bash
+python plot_loss_comparison.py
+```
 
 Figure 5 (Causal Attention Profile): Combines SHAP results to demonstrate the TCN's focus on immediate precursors (Omori's Law).
-```python plot_shap_temporal.py```
+```bash
+python plot_shap_temporal.py
+```
 
 Key Findings & Visuals1.
  Convergence Stability (Figure 4)
@@ -77,17 +97,20 @@ Key Findings & Visuals1.
  The SHAP analysis reveals that TCNs correctly prioritize immediate precursor events (consistent with Omori's Law), indicated by the high attention in the recent time steps (red highlight). In contrast, Transformers and LSTMs fail to establish a distinct temporal focus.
  (Note: Run plot_shap_temporal.py to generate this figure.)
 
-🤝 Citation
+## Citation
+
 If you use this code or dataset in your research, please cite:
+
+```bash
 @article{khalili2025hierarchical,
   title={Hierarchical vs. Sequential Processing: A Rigorous Assessment of Deep Learning Inductive Biases for Earthquake Forecasting},
   author={Khalili, Marzieh and Fotoohi, Ali},
   journal={Computers & Geosciences (Under Review)},
   year={2025}
 }
+```
 
-
-📧 Contact
+Contact
 For questions or inquiries, please contact: Marzieh Khalili - marzieh-khalili@shirazu.ac.ir
 
 
