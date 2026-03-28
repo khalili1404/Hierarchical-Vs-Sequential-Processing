@@ -37,7 +37,7 @@ Moving beyond standard machine-learning regression metrics, this study conducts 
 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YourUsername/Seismic-DL-Benchmark.git
+git clone https://anonymous.4open.science/r/Hierarchical-Vs-Sequential-Processing-8441
 cd Seismic-DL-Benchmark
 pip install -r requirements.txt
 ```
