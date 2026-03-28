@@ -1,14 +1,3 @@
-"""
-Hierarchical vs. Sequential Processing for Earthquake Forecasting
-Author: Marzieh Khalili
-Affiliation: Shiraz University, Iran
-Date: 2025
-Description: 
-    This script benchmarks TCN, Transformer, LSTM, and GRU architectures 
-    for spatiotemporal seismic forecasting in the Zagros-Makran transition zone.
-    It implements strict chronological splitting to prevent data leakage.
-"""
-
 import os
 import random
 import warnings
