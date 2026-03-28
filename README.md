@@ -1,54 +1,55 @@
-# Hierarchical vs. Sequential Processing for Earthquake Forecasting
+# Tectonic Memory and Short-Term Earthquake Forecasting in the Zagros-Makran Belt
 
-**A Deep Learning Benchmark in the Zagros-Makran Transition Zone**
+**A Seismological Validation of Deep Sequence Models**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-380/)
 
-##  Overview
-This repository contains the official implementation of the paper:
-> **"Hierarchical vs. Sequential Processing: A Rigorous Assessment of Deep Learning Inductive Biases for Earthquake Forecasting"**
+## Overview
+This repository contains the official implementation, datasets, and evaluation frameworks for the paper:
+> **"Tectonic Memory and Short-Term Earthquake Forecasting in the Zagros-Makran Belt: A Seismological Validation of Deep Sequence Models"** (Submitted to the *Journal of Seismology*).
 
-We conduct a rigorous benchmark of three architectural paradigms for spatiotemporal seismic forecasting:
-1.  **Temporal Convolutional Networks (TCN):** Hierarchical processing (Proposed approach).
-2.  **Recurrent Neural Networks (LSTM/GRU):** Sequential processing (Baseline).
-3.  **Transformers:** Global attention mechanism (Baseline).
+Moving beyond standard machine-learning regression metrics, this study conducts a rigorous benchmark of deep sequence models (TCN, LSTM, GRU, Transformer) heavily grounded in **applied seismology**. We specifically evaluate these parameter-controlled architectures (~57k parameters) in the highly chaotic tectonic regime of the Zagros-Makran transition zone. 
 
-Our empirical results demonstrate that the **TCN architecture** possesses a hierarchical inductive bias better suited for seismic data, offering superior robustness to noise and generalization in medium-term forecasting ($w=50$) compared to RNNs and Transformers.
+**Key Contributions:**
+1. **Operational Seismological Validation:** Utilizing the **Molchan Error Diagram** and **ROC Analysis** to quantify true physical predictive gain across multiple magnitude thresholds ($M \ge 3.5, 4.0, 4.5$).
+2. **Physical Interpretability:** Using SHAP analysis to demonstrate how hierarchical causal convolutions inherently capture **Omori's Law** decay.
+3. **The Data Starvation Paradigm:** Identifying the fundamental bottleneck of AI-driven seismology when predicting major ruptures at the historical completeness magnitude.
 
-##  Project Structure
+---
+
+## Project Structure
 ```text
 ├── data/
-│   └── Final_Cleaned_Catalog_v2.csv   # (Required) Seismicity catalog input
+│   └── Final_Cleaned_Catalog_v2.csv   # (Required) Homogeneous seismicity catalog (post-1998)
 ├── models/                            # Directory for saving trained .keras models
-├── train_benchmarks.py                # Step 1: Trains all models (LSTM, GRU, TCN, Transformer)
-├── explain_shap.py                    # Step 2: Calculates SHAP values for all models (Global & Temporal)
-├── plot_loss_comparison.py            # Step 3: Generates Figure 4 (Validation Loss Comparison)
-├── plot_shap_temporal.py              # Step 3: Generates Figure 5 (Combined Temporal Attention)
-├── plot_fmd.py                        # Analysis: Frequency-Magnitude Distribution (FMD) plotting
-├── quick_test.py                      # Diagnostics: Verifies installation dependencies
+├── train_benchmarks.py                # Step 1: Trains all controlled models (LSTM, GRU, TCN, Transformer)
+├── explain_shap.py                    # Step 2: Calculates SHAP values for interpretability
+├── plot_loss_comparison.py            # Step 3: Generates Figure 4 (Validation Loss Comparison & Stability)
+├── evaluate_seismology.py             # Step 4: Generates Figure 5 (Molchan & ROC Analysis for target thresholds)
+├── plot_shap_temporal.py              # Step 5: Generates Figure 6 (Temporal Attention & Omori's Law)
 ├── requirements.txt                   # List of Python dependencies
 └── README.md                          # Project documentation
 ```
 
 ##  Installation & Setup
 
-### 1. Clone the Repository
+1. Clone the Repository
 
 ```bash
-git clone https://github.com/khalili1404/Hierarchical-Vs-Sequential-Processing.git
-cd Hierarchical-Vs-Sequential-Processing
+git clone https://github.com/YourUsername/Seismic-DL-Benchmark.git
+cd Seismic-DL-Benchmark
 pip install -r requirements.txt
 ```
 
-### 2. Install Dependencies
+2. Install Dependencies
 
 It is highly recommended to use a virtual environment (Python 3.8+).
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Verify Environment
+3. Verify Environment
 
 Run the quick diagnostic script to ensure TensorFlow, SHAP, and other libraries are correctly installed.
 
@@ -57,60 +58,66 @@ python quick_test.py
 ```
 
 ## Usage Pipeline
+
 To reproduce the study's results, please follow these steps in order:
 
-### Step 1: Training the Models
+1. Model Training
 
-Trains all architectures from scratch across short-term (w=20) and medium-term (w=50) horizons.
+Trains all architectures under strict chronological splitting to prevent data leakage.
 
 ```bash
 python train_benchmarks.py
 ```
 Output: Saves trained models to the root directory and prints MAE metrics.
 
-### Step 2: Feature Importance Analysis
-Runs the SHAP explainer on the trained models to compute global and temporal feature importance. This step is essential for interpretability.
+2. Seismological Validation (Molchan & ROC)
+
+Evaluates the optimal TCN model ($w=20$) against random guessing for operational forecasting skill.
+
+```bash
+python evaluate_seismology.py
+```
+
+Output: Generates Figure 5 (AUC = 0.560 for $M \ge 3.5$)
+
+3. Physical Interpretability (SHAP)
+
+Runs the SHAP explainer to compute temporal feature importance, proving the model's alignment with tectonic physics.
+
 ```bash
 python explain_shap.py
-```
-Output: Generates individual SHAP plots for each model (useful for Supplementary Materials).
-
-### Step 3: Generating Paper Figures
-Produces the final combined figures used in the manuscript:
-
-Figure 4 (Validation Loss Comparison): Visualizes the convergence stability of the TCN compared to Transformers.
-```bash
-python plot_loss_comparison.py
-```
-
-Figure 5 (Causal Attention Profile): Combines SHAP results to demonstrate the TCN's focus on immediate precursors (Omori's Law).
-```bash
 python plot_shap_temporal.py
 ```
 
-Key Findings & Visuals1.
- Convergence Stability (Figure 4)
- As shown below, the TCN (red) demonstrates stable convergence similar to RNNs, whereas the Transformer (grey) exhibits optimization volatility in longer sequences (w=50).
- (Note: Run plot_loss_comparison.py to generate this figure.)
+Output: Generates Figure 6 (Causal Attention Profile highlighting recent clustering dynamics).
 
- 2. Physical Interpretability via SHAP (Figure 5)
- The SHAP analysis reveals that TCNs correctly prioritize immediate precursor events (consistent with Omori's Law), indicated by the high attention in the recent time steps (red highlight). In contrast, Transformers and LSTMs fail to establish a distinct temporal focus.
- (Note: Run plot_shap_temporal.py to generate this figure.)
+4. Convergence & Stability Analysis
+
+Visualizes the validation loss to demonstrate the TCN's robustness against noise accumulation over extended sequences ($w=50$).
+
+```bash
+python plot_loss_comparison.py
+```
+Output: Generates Figure 4 and Supplementary Figures S1 & S2.
+
+## Key Findings
+
+1. `Seismological Predictive Gain`: The TCN strictly outperforms random guessing in the Molchan error diagram, optimizing hit rates during periods of minimal spatial-temporal alarm coverage for moderate seismicity.
+
+2. `Alignment with Earthquake Physics`: SHAP analysis reveals that the TCN correctly prioritizes immediate precursor events (consistent with Omori's Law), whereas Transformers and LSTMs fail to establish a distinct temporal focus.
+
+3. `The Data Starvation Bottleneck`: While the model mathematically recovers diagnostic skill at higher thresholds ($M_c \ge 4.5$), operational forecasting of large-scale ruptures is fundamentally constrained by the inherent sparsity of the instrumental catalog, rather than architectural limits.
 
 ## Citation
 
-If you use this code or dataset in your research, please cite:
+### If you use this code or dataset in your research, please cite:
 
 ```bash
-@article{khalili2025hierarchical,
-  title={Hierarchical vs. Sequential Processing: A Rigorous Assessment of Deep Learning Inductive Biases for Earthquake Forecasting},
+@article{khalili2025tectonic,
+  title={Tectonic Memory and Short-Term Earthquake Forecasting in the Zagros-Makran Belt: A Seismological Validation of Deep Sequence Models},
   author={Khalili, Marzieh and Fotoohi, Ali},
-  journal={Computers & Geosciences (Under Review)},
-  year={2025}
+  journal={Journal of Seismology (Under Review)},
+  year={2026}
 }
 ```
-
-Contact
-For questions or inquiries, please contact: Marzieh Khalili - marzieh-khalili@shirazu.ac.ir
-
 
