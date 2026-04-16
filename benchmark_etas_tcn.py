@@ -7,17 +7,11 @@ from tcn import TCN
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import roc_curve, auc
 
-# =======================================================
-# 1. تنظیم مسیر فایل‌ها (کاملاً منطبق بر مسیر لپ‌تاپ شما)
-# =======================================================
 BASE_DIR = r"H:\Beyrami\first"
 DATA_FILE = os.path.join(BASE_DIR, 'journal of seismology', 'Final_Cleaned_Catalog_v2.csv')
 MODEL_PATH = os.path.join(BASE_DIR, 'Model_TCN_w20.keras')
 OUTPUT_IMAGE = os.path.join(BASE_DIR, 'journal of seismology', 'Rebuttal_Figure_Final.png')
 
-# =======================================================
-# 2. بارگذاری داده‌ها و مدل (دقیقاً مشابه evaluate_seismology.py شما)
-# =======================================================
 print("Loading data and model...")
 df = pd.read_csv(DATA_FILE)
 df['datetime'] = pd.to_datetime(df['datetime'])
@@ -50,13 +44,9 @@ for i in range(len(x_test_scaled) - WINDOW_SIZE - HORIZON + 1):
 X_test = np.array(X_test)
 Y_test = np.array(Y_test)
 
-# بارگذاری مدل شبکه‌ی عصبی شما
 model = tf.keras.models.load_model(MODEL_PATH, custom_objects={'TCN': TCN})
 Y_pred = model.predict(X_test, verbose=0)
 
-# =======================================================
-# 3. استخراج مقادیر واقعی FPR و TPR (بدون نیاز به تغییر دستی)
-# =======================================================
 print("Calculating real FPR and TPR from your model...")
 mag_idx = 3
 y_test_physical = scaler_y.inverse_transform(Y_test.reshape(-1, HORIZON, 4)[:, 0, :])[:, mag_idx]
@@ -65,13 +55,9 @@ y_pred_physical = scaler_y.inverse_transform(Y_pred.reshape(-1, HORIZON, 4)[:, 0
 TARGET_THRESHOLD = 3.5
 y_true_binary = (y_test_physical >= TARGET_THRESHOLD).astype(int)
 
-# محاسبه متغیرهای طلایی که دنبالش بودی:
 fpr, tpr, _ = roc_curve(y_true_binary, y_pred_physical)
 roc_auc = auc(fpr, tpr)
 
-# =======================================================
-# 4. رسم نمودار داور-کش (Two-Panel Figure)
-# =======================================================
 print("Generating the exact Rebuttal Figure...")
 plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.size'] = 12
@@ -79,7 +65,6 @@ plt.rcParams['axes.linewidth'] = 1.5
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-# ---- پنل A: Bar Chart ----
 labels = ['Spatiotemporal\n(Time & Location)', 'Magnitude\n(Event Size)']
 x = np.arange(len(labels))
 width = 0.35
@@ -102,11 +87,9 @@ ax1.axhline(y=0.5, color='gray', linestyle='--', linewidth=1.5, zorder=0)
 ax1.legend(loc='upper right', framealpha=0.9)
 ax1.grid(axis='y', linestyle='--', alpha=0.6, zorder=0)
 
-# ---- پنل B: منحنی ROC واقعی ----
 ax2.plot([0, 1], [0, 1], color='gray', linestyle='--', linewidth=2, label='Random Guessing (AUC = 0.50)')
 ax2.plot([0, 1], [0, 1], color='#4c72b0', linestyle=':', linewidth=4, alpha=0.8, label='ETAS Baseline (AUC = 0.50)')
 
-# در اینجا خط قرمز دقیقاً بر اساس مدل شما رسم می‌شود
 ax2.plot(fpr, tpr, color='#c44e52', linewidth=3, label=f'TCN Memory Model (AUC = {roc_auc:.2f})')
 
 ax2.set_xlabel('False Positive Rate', fontweight='bold')
@@ -115,7 +98,6 @@ ax2.set_title('(b) ROC Curve for Magnitude Predictability', loc='left', fontweig
 ax2.legend(loc='lower right', framealpha=0.9)
 ax2.grid(True, linestyle='--', alpha=0.6)
 
-# ذخیره نهایی در سیستم شما
 plt.tight_layout()
 plt.savefig(OUTPUT_IMAGE, dpi=300, bbox_inches='tight')
 print(f"\n✅ Figure successfully saved at:\n{OUTPUT_IMAGE}")
