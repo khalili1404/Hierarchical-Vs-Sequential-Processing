@@ -112,7 +112,7 @@ Output: Generates Figure 4 and Supplementary Figures S1 & S2.
 
 ## Key Findings
 
-1. `ETAS Limit Broken`:TCN successfully breaks the magnitude-independence barrier of classical statistical models (ETAS), improving magnitude predictability from a random baseline of AUC=0.50 to a meaningful 0.560.
+1. `ETAS Limit Broken`: TCN successfully breaks the magnitude-independence barrier of classical statistical models (ETAS), improving magnitude predictability from a random baseline of AUC=0.50 to a meaningful 0.560.
 
 2. `Seismological Predictive Gain`: The TCN strictly outperforms random guessing in the Molchan error diagram, optimizing hit rates during periods of minimal spatial-temporal alarm coverage for moderate seismicity.
 
